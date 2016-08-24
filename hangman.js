@@ -85,7 +85,34 @@ function guessLetter(elm) {
   // TODO: Determine if the letter is in the secret word,
   // if so, reveal it in the secretWordDiv, otherwise
   // add a part to our hangman
-
+  
+  /*Class solution
+  
+	if(secretWord.indexOf(letter.toLowerCase()) != -1)
+	{
+		var oldBlanks = blanks;
+		blanks = "";
+		for(i=0; i<secretWord.length; i++)
+		{
+			if (secretWord.charAt(i) == letter.toLowerCase())
+			{
+				blanks += letter.toLowerCase(); 
+			}
+			else
+			{
+				blanks += oldBlanks.charAt(i);
+			}
+		}
+		drawBlanks();
+	}
+	else
+	{
+		wrongGues++;
+		drawStickMan(numberWrong);
+	}
+  
+  */
+  
   var noneRight = true;
   //Search through each space, comparing the guess to each character of the secret word
   for(i = 0; i < blanks.length; i++)
