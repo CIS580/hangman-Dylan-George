@@ -5,15 +5,26 @@ var guessesDiv = document.getElementById('guesses');
 var secretWord = "";
 var blanks = "";
 
+//The index of each underscore in wordDiv's innerHTML
+var underscoreLocations = [];
+//Total number of wrong guesses
+var numberWrong = 0;
+//Total number of correct guesses
+var numberRight = 0;
+//The number of wrong turns until stick man is complete
+var maxChances = 6;
+
 /**
  * Initializes a new game.
  */
 function init() {  
+  numberWrong = 0;
   clearGuesses();
   resetLetters();
   drawStickMan(0);
   chooseSecretWord();
-  drawBlanks();
+  drawBlanks(); 
+  findUnderscoreLocations();
 };
 init();
 
@@ -38,6 +49,22 @@ function resetLetters() {
 }
 
 /**
+ * Scans the wordDiv innerHTML for all underscores, storing
+ * each underscores spot in an array. This position is used later
+ * to replace the underscores
+ */
+function findUnderscoreLocations()
+{
+  for (i = 0; i < wordDiv.innerHTML.length; i++)
+  {
+	if(wordDiv.innerHTML.charAt(i) == '_')
+	{
+		underscoreLocations.push(i);
+	}
+  }
+}
+
+/**
  * Guesses a single letter, removes it from possible guesses, 
  * checks to see if it is in the secret word, and if it is
  * adds it to the secret word, if not, draws another hangman part
@@ -59,8 +86,42 @@ function guessLetter(elm) {
   // if so, reveal it in the secretWordDiv, otherwise
   // add a part to our hangman
 
+  var noneRight = true;
+  //Search through each space, comparing the guess to each character of the secret word
+  for(i = 0; i < blanks.length; i++)
+  {
+	if (letter == secretWord.charAt(i).toUpperCase())
+	{
+		
+		//Replaces innerHTML by removing underscore and replacing with guessed character
+		wordDiv.innerHTML = wordDiv.innerHTML.substr(0, underscoreLocations[i]) + letter + 
+			wordDiv.innerHTML.substr(underscoreLocations[i]+1);
+		noneRight = false;
+		numberRight++;
+	}
+  }
+  	//if no matches were found, add to stick man
+  if(noneRight == true)
+  {
+	numberWrong++;
+	drawStickMan(numberWrong);
+  }
+
   // TODO: Determine if the game is over, and if so,
   // let the player know if they have won or lost
+  
+  //The alerts pop up before the final letter is placed
+  //and before the final stick man piece is drawn,
+  //but I don't know how to fix that
+  if(numberRight == secretWord.length)
+  {
+	alert("Congratulations. You won!");
+  }
+  else if (numberWrong == maxChances)
+  {
+	alert("You lost. Game Over.");
+  }
+  
 }
 
 /**
